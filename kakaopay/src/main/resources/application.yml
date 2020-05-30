@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/kakaopay?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: afsd
+    
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+server:
+  port: 8000
+---
+spring:
+  profiles: local
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/kakaopay?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: afsd
+    
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+server:
+  port: 8080
+  
+#mybatis:
+#  type-aliases-package: com.example.myproject.mapper
+#  mapper-locations: mybatis/mapper/**/*.xml
+---
+spring:
+  profiles: dev
+server:
+  port: 8090
+---
+spring:
+  profiles: prod
+server:
+  port: 80

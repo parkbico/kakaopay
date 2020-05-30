@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kakao.pay.coupon.mapper.CouponMapper">
+
+	<insert id="insertCoupon" parameterType="com.kakao.pay.coupon.dto.Coupon" >
+		INSERT INTO coupon (
+			COUPONCODE ,
+			USEYN 
+		)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.couponCode},
+			#{item.useYN}		
+		)
+		</foreach>
+	</insert>
+	
+	<select id="getRandomCoupon" resultType="com.kakao.pay.coupon.dto.Coupon">
+		SELECT 
+			COUPONCODE 
+		FROM coupon 
+		WHERE ( ID IS NULL OR ID = "" )
+		LIMIT 1
+	</select>
+	
+	<update id="updateEmail" parameterType="com.kakao.pay.coupon.dto.Coupon">
+        UPDATE coupon
+           SET ID = #{id},
+               EMAIL = #{email},
+               PAYDATE = #{payDate},
+               EXPIRATIONDATE = #{expirationDate}
+        WHERE COUPONCODE = #{couponCode}
+    </update>
+	
+	<select id="show" resultType="com.kakao.pay.coupon.dto.Coupon">
+		SELECT 
+		      ID , COUPONCODE , EMAIL , PAYDATE , EXPIRATIONDATE
+		FROM COUPON
+		WHERE EMAIL = #{email}
+		AND EXPIRATIONDATE >= DATE_FORMAT(NOW(),"%Y-%m-%d")
+		AND USEYN = 0
+	</select>
+	
+	<select id="getCouponInfo" resultType="com.kakao.pay.coupon.dto.Coupon">
+		SELECT 
+		      ID , COUPONCODE , EMAIL , PAYDATE , EXPIRATIONDATE
+		  FROM COUPON
+		  WHERE COUPONCODE = #{code}
+		  AND EXPIRATIONDATE >= DATE_FORMAT(NOW(),"%Y-%m-%d")
+	</select>
+	
+	<update id="useCoupon" parameterType="java.lang.String">
+        UPDATE coupon
+           SET USEYN = 1
+        WHERE COUPONCODE = #{code}
+        AND EXPIRATIONDATE >= DATE_FORMAT(NOW(),"%Y-%m-%d")
+    </update>
+	
+	<update id="cancelCoupon" parameterType="java.lang.String">
+        UPDATE coupon
+           SET USEYN = 0
+        WHERE COUPONCODE = #{code}
+        AND EXPIRATIONDATE >= DATE_FORMAT(NOW(),"%Y-%m-%d")
+        AND USEYN = 1
+    </update>
+	
+	<select id="expire" resultType="java.util.HashMap">
+		SELECT 
+		      COUPONCODE , PAYDATE , EXPIRATIONDATE
+		FROM COUPON
+		WHERE EXPIRATIONDATE = DATE_FORMAT(NOW(),"%Y-%m-%d")
+	</select>
+	
+ </mapper>
